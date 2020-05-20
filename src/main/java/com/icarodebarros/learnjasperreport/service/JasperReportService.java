@@ -31,7 +31,7 @@ public class JasperReportService {
 	@Autowired
 	private FileStorageService fileStorageService;
 	
-	public String exportReport(String reportFormat) throws JRException, IOException {
+	public String exportReport(String fileName) throws JRException, IOException {
 		// Carrega o template e compila para um JasperReport
 		File file = ResourceUtils.getFile("classpath:templates/pessoasTemplate.jrxml");
 		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
@@ -50,29 +50,23 @@ public class JasperReportService {
 		// Preenche o jasperReport com os parâmetros e o dados
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-		this.saveReport(jasperPrint, reportFormat);
+		this.saveReport(jasperPrint, fileName);
 			
-		return "Report gerado em: " + this.fileStorageService.getDefaultFilePathAndName() + "." + reportFormat;
+		return "Report gerado em: " + this.fileStorageService.getPath(fileName).toString();
 	}
 	
-	private void saveReport(JasperPrint jasperPrint, String reportFormat) throws JRException, IOException {
+	private void saveReport(JasperPrint jasperPrint, String fileName) throws JRException, IOException {
 //		// Busca a variável de ambiente do windows '%userprofile%'
 //		String userprofile = System.getenv("USERPROFILE");
-//		
-//		if (reportFormat.equalsIgnoreCase("html")) {
-//			JasperExportManager.exportReportToHtmlFile(jasperPrint, userprofile + "\\Desktop\\pessoas.html");
-//		} else if (reportFormat.equalsIgnoreCase("pdf")) {
-//			JasperExportManager.exportReportToPdfFile(jasperPrint, userprofile + "\\Desktop\\pessoas.pdf");
-//		} else {
-//			throw new IOException("Extenção não suportada ou não informada");
-//		}
+//		String filePathAndName = userprofile + "\\Desktop\\" + fileName;
 		
-		String filePathAndName = this.fileStorageService.getDefaultFilePathAndName();
+		String filePathAndName = this.fileStorageService.getPath(fileName).toString();
+		String reportFormat = fileName.split("\\.")[1];
 		
 		if (reportFormat.equalsIgnoreCase("html")) {
-			JasperExportManager.exportReportToHtmlFile(jasperPrint, filePathAndName + ".html");
+			JasperExportManager.exportReportToHtmlFile(jasperPrint, filePathAndName);
 		} else if (reportFormat.equalsIgnoreCase("pdf")) {
-			JasperExportManager.exportReportToPdfFile(jasperPrint, filePathAndName + ".pdf");
+			JasperExportManager.exportReportToPdfFile(jasperPrint, filePathAndName);
 		} else {
 			throw new IOException("Extenção não suportada ou não informada");
 		}

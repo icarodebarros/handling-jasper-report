@@ -49,16 +49,19 @@ public class PessoaResource {
 		return ResponseEntity.ok().body(list);
 	}
 	
-	@RequestMapping(value="/gerarRelatorio/{format}", method = RequestMethod.GET)
-	public ResponseEntity<String> generateReport(@PathVariable String format) {
-		String result = this.service.generateReport(format);
+	@RequestMapping(value="/gerarRelatorio/{fileName}", method = RequestMethod.GET)
+	public ResponseEntity<String> generateReport(@PathVariable String fileName) {
+		String result = this.service.generateReport(fileName);
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@RequestMapping(value="/downloadRelatorio", method = RequestMethod.GET)
-	public ResponseEntity<Resource> getReport(HttpServletRequest request) {
+	// Download as Resource
+	@RequestMapping(value="/resourceDownload", method = RequestMethod.GET)
+	public ResponseEntity<Resource> getReport(HttpServletRequest request) {		
+		String fileName = "RELATORIO.PDF";
+		
 		// Load file as Resource
-		Resource resource = this.service.getReportAsResource();
+		Resource resource = this.service.getReportAsResource(fileName);
 
 		// Try to determine file's content type
         String contentType = null;
@@ -79,13 +82,15 @@ public class PessoaResource {
                 .body(resource);
 	}
 	
-	@RequestMapping(value="/downloadRelatorio2", method = RequestMethod.GET)
+	// Download as ByteArrayResource
+	@RequestMapping(value="/byteArrayDownload", method = RequestMethod.GET)
 	public ResponseEntity<Resource> getReport() {
-		byte[] data = this.service.getReportAsByteArray();
+		String fileName = "RELATORIO.PDF";
+		byte[] data = this.service.getReportAsByteArray(fileName);
 		ByteArrayResource resource = new ByteArrayResource(data);
 
-		MediaType mediaType = this.fileStorageService.getMediaTypeForDefaultFileName(this.servletContext);
-        Path path = this.fileStorageService.getDefaultPath();
+		MediaType mediaType = FileStorageService.getMediaTypeForFileName(this.servletContext, fileName);
+        Path path = this.fileStorageService.getPath(fileName);
  
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())
@@ -95,15 +100,13 @@ public class PessoaResource {
 	}
  
     // http://localhost:8080/download?fileName=abc.zip
-    // Using ResponseEntity<InputStreamResource>
-    @RequestMapping("/download")
+    // Download as InputStreamResource
+    @RequestMapping("/inputStreamDownload")
     public ResponseEntity<InputStreamResource> downloadFile(@RequestParam(name = "fileName") String fileName) throws IOException {
  
         MediaType mediaType = FileStorageService.getMediaTypeForFileName(this.servletContext, fileName);
-        System.out.println("fileName: " + fileName);
-        System.out.println("mediaType: " + mediaType);
  
-        File file = new File(this.fileStorageService.getFilePathAndName(fileName));
+        File file = this.service.getReportAsFile(fileName);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
  
         return ResponseEntity.ok()

@@ -19,18 +19,10 @@ import com.icarodebarros.learnjasperreport.config.FileStorageProperties;
 public class FileStorageService {
 	
 	private final Path fileStorageLocation;
-	private final String defaultFileName;
-	private final String defaultFileFormat;
-	
-	private final String getFullDefaultFileName() {
-		return this.defaultFileName + "." + this.defaultFileFormat;
-	}
 
 	@Autowired
     public FileStorageService(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getDownloadDir()).toAbsolutePath().normalize();
-        this.defaultFileName = fileStorageProperties.getDefaultFileName();
-        this.defaultFileFormat = fileStorageProperties.getDefaultFileFormat();
 
         try {
             Files.createDirectories(this.fileStorageLocation);
@@ -39,10 +31,6 @@ public class FileStorageService {
         }
     }
 
-    public Resource loadDefaultFileAsResource() {
-    	return loadFileAsResource(getFullDefaultFileName());
-    }
-    
     public Resource loadFileAsResource(String fullFileName) {
         try {
             Path filePath = this.getPath(fullFileName);
@@ -57,39 +45,15 @@ public class FileStorageService {
         }
     }
     
-    public byte[] loadDefaultFileAsByteArray() throws IOException {
-    	return this.loadFileAsByteArray(getFullDefaultFileName());
-    }
-    
     public byte[] loadFileAsByteArray(String fullFileName) throws IOException {
     	this.loadFileAsResource(fullFileName); // Only to test if exists
         Path path = this.getPath(fullFileName);
         return Files.readAllBytes(path);
     }
-    
-    public Path getDefaultPath() {
-		return this.fileStorageLocation.resolve(this.getFullDefaultFileName()).normalize();
-	}
-    
+
 	public Path getPath(String fullFileName) {
 		return this.fileStorageLocation.resolve(fullFileName).normalize();
 	}
-    
-    public String getDefaultFilePathAndName() {
-    	return this.getFilePathAndName(this.defaultFileName);
-    }
-    
-    public String getFilePathAndName(String fullFileName) {
-    	return this.fileStorageLocation.resolve(fullFileName).normalize().toString();
-    }
-    	
-    public String getDefaultFileFormat() {
-		return defaultFileFormat;
-	}
-    
-    public MediaType getMediaTypeForDefaultFileName(ServletContext servletContext) {
-    	return FileStorageService.getMediaTypeForFileName(servletContext, this.getFullDefaultFileName());
-    }
        
     // abc.zip
     // abc.pdf,..
