@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DesempenhoTemplate" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1cc750f1-0b2e-4244-ad3d-3b5f624981db">
+
+	<subDataset name="LineChartDataset" uuid="5d093d9a-4b40-4f87-9358-9657ffa11776">
+		<field name="id" class="java.lang.Integer">
+		</field>
+		<field name="dia" class="java.util.Date">
+		</field>
+		<field name="nota" class="java.lang.Integer">
+		</field>
+	</subDataset>
+
+	<parameter name="createdBy" class="java.lang.String">
+	</parameter>
+	
+	<field name="id" class="java.lang.Integer">
+	</field>
+	<field name="nome" class="java.lang.String">
+	</field>
+	<field name="sexo" class="java.lang.String">
+	</field>
+	<field name="cpf" class="java.lang.String">
+	</field>
+	<field name="email" class="java.lang.String">
+	</field>
+	<field name="desempenhos" class="java.util.Collection">
+	</field>
+	
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="430" y="0" width="120" height="30" uuid="bec3a947-447d-4a5c-8fde-ff6b87b79d54"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[DESEMPENHOS]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="332" splitType="Stretch">
+			<staticText>
+				<reportElement x="28" y="20" width="498" height="30" uuid="3d40b911-8ee1-4fc8-b35d-56e3239d0d23"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESEMPENHOS POR ALUNO]]></text>
+			</staticText>
+			
+			<textField>
+				<reportElement x="10" y="79" width="534" height="70" uuid="00c9307f-4f40-478c-bd58-b73beb69225d"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA["	O sr.(a) " + $F{nome} + " (CPF " + $F{cpf} + ") obteve o histórico de desempenho mostrado abaixo. As notas são definidas de acordo com os critérios de cada professor, podendo ser calculadas com base no desempenho do aluno em provas, entraga de trabalhos e/ou apresentação de seminários. "]]></textFieldExpression>
+			</textField>
+			
+			<lineChart>
+				<chart evaluationTime="Report">
+					<reportElement x="82" y="149" width="391" height="140" forecolor="#666666" uuid="d08e0e94-d6d7-469e-9717-95fc46855866"/>
+					<chartTitle>
+						<titleExpression><![CDATA["Desempenho 2020.1"]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend textColor="#666666">
+						<font size="8" isBold="false" isItalic="true"/>
+					</chartLegend>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="LineChartDataset" uuid="c5763ec2-7670-40c6-8a51-30d763262ec5">
+							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{desempenhos})]]></dataSourceExpression>
+						</datasetRun>
+					</dataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["João"]]></seriesExpression>
+						<categoryExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{dia})]]></categoryExpression>
+						<valueExpression><![CDATA[$F{nota}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot labelRotation="15.0"/>
+					<categoryAxisFormat labelRotation="15.0">
+						<axisFormat labelColor="#666666" tickLabelColor="#666666" axisLineColor="#666666">
+							<tickLabelFont>
+								<font size="9" isBold="false"/>
+							</tickLabelFont>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat labelColor="#666666" tickLabelColor="#666666" verticalTickLabels="false" axisLineColor="#666666"/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+			
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

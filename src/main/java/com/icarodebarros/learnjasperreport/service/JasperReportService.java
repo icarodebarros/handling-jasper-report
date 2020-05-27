@@ -3,6 +3,7 @@ package com.icarodebarros.learnjasperreport.service;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import com.icarodebarros.learnjasperreport.domain.Pessoa;
-import com.icarodebarros.learnjasperreport.repository.PessoaRepository;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -26,7 +26,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public class JasperReportService {
 	
 	@Autowired
-	private PessoaRepository pessoaRepository;
+	private PessoaService pessoaService;
 	
 	@Autowired
 	private FileStorageService fileStorageService;
@@ -37,7 +37,7 @@ public class JasperReportService {
 		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
 
 		// Carrega os dados que o template irá mostrar
-		List<Pessoa> pessoas = pessoaRepository.findAll();
+		List<Pessoa> pessoas = pessoaService.findAll();
 		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(pessoas);
 		
 		// Cria o mapa de parâmetros
@@ -70,6 +70,28 @@ public class JasperReportService {
 		} else {
 			throw new IOException("Extenção não suportada ou não informada");
 		}
+	}
+	
+	// -------------------------------------------------------------------------------------------------
+	public String exportChartReport(Integer pessoaId, String fileName) throws JRException, IOException {
+		// Carrega o template e compila para um JasperReport
+		File file = ResourceUtils.getFile("classpath:templates/desempenhoTemplate.jrxml");
+		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+
+		// Carrega os dados que o template irá mostrar
+		Pessoa pessoa = pessoaService.find(pessoaId);
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(Arrays.asList(pessoa));
+		
+		// Cria o mapa de parâmetros
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("createdBy", "Ícaro de Barros");
+		
+		// Preenche o jasperReport com os parâmetros e o dados
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+
+		this.saveReport(jasperPrint, fileName);
+			
+		return "Report gerado em: " + this.fileStorageService.getPath(fileName).toString();
 	}
 
 }

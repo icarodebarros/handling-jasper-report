@@ -42,6 +42,12 @@ public class PessoaResource {
 	
     @Autowired
     private ServletContext servletContext;
+    
+	@RequestMapping(value="/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Pessoa> find(@PathVariable Integer id) {
+		Pessoa obj = this.service.find(id);
+		return ResponseEntity.ok().body(obj);
+	}
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Pessoa>> findAll() {
@@ -52,6 +58,12 @@ public class PessoaResource {
 	@RequestMapping(value="/gerarRelatorio/{fileName}", method = RequestMethod.GET)
 	public ResponseEntity<String> generateReport(@PathVariable String fileName) {
 		String result = this.service.generateReport(fileName);
+		return ResponseEntity.ok().body(result);
+	}
+	
+	@RequestMapping(value="/gerarRelatorioGrafico/{pessoaId}/{fileName}", method = RequestMethod.GET)
+	public ResponseEntity<String> generateChartReport(@PathVariable String pessoaId, @PathVariable String fileName) {
+		String result = this.service.generateChartReport(Integer.valueOf(pessoaId), fileName);
 		return ResponseEntity.ok().body(result);
 	}
 	
