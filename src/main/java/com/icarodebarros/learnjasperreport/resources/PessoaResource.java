@@ -67,6 +67,12 @@ public class PessoaResource {
 		return ResponseEntity.ok().body(result);
 	}
 	
+	@RequestMapping(value="/gerarRelatorioCompleto/{pessoaId}/{fileName}", method = RequestMethod.GET)
+	public ResponseEntity<String> generateFullReport(@PathVariable String pessoaId, @PathVariable String fileName) {
+		String result = this.service.generateFullReport(Integer.valueOf(pessoaId), fileName);
+		return ResponseEntity.ok().body(result);
+	}
+	
 	// Download as Resource
 	@RequestMapping(value="/resourceDownload", method = RequestMethod.GET)
 	public ResponseEntity<Resource> getReport(HttpServletRequest request) {		

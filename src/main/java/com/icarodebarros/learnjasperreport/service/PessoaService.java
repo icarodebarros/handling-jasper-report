@@ -89,4 +89,18 @@ public class PessoaService {
 		}
 		return result;
 	}
+	
+	// ----------------------------------------------------------
+	
+	public String generateFullReport(Integer pessoaId, String fileName) {
+		String result = null;
+		try {
+			result = this.JRService.exportFullReport(pessoaId, fileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

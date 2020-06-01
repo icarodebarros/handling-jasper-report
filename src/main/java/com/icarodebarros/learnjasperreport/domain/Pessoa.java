@@ -26,7 +26,7 @@ public class Pessoa {
 	@Column(nullable = false)
 	private String cpf;
 	
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String email;
 	
 	// @JsonIgnore

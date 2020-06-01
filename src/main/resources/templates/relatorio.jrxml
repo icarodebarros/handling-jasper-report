@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Relatorio" pageWidth="595" pageHeight="842" sectionType="Part" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" uuid="d2716064-8ae4-40cf-a575-33afba400e3a">
+	<property name="com.jaspersoft.studio.book.group.cover.header" value="Cover"/>
+	
+	<parameter name="createdBy" class="java.lang.String">
+	</parameter>
+	<parameter name="imagesPath" class="java.lang.String">
+	</parameter>
+	
+	<parameter name="pessoasJR" class="net.sf.jasperreports.engine.JasperReport">
+	</parameter>
+	<parameter name="desempenhoJR" class="net.sf.jasperreports.engine.JasperReport">
+	</parameter>
+
+	<field name="destaque" class="java.lang.Object">
+	</field>
+	<field name="pessoas" class="java.util.Collection">
+	</field>
+	
+	<detail>
+		<part evaluationTime="Report" uuid="925a764f-5e03-484c-a236-191c878e702c">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="createdBy">
+					<subreportParameterExpression><![CDATA[$P{createdBy}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="imagesPath">
+					<subreportParameterExpression><![CDATA[$P{imagesPath}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{pessoas})]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA[$P{pessoasJR}]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part evaluationTime="Report" uuid="557dcda7-168a-47d9-90a2-30ac8e6e1ca5">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(java.util.Arrays.asList($F{destaque}))]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA[$P{desempenhoJR}]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+	</detail>
+</jasperReport>
